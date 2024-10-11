@@ -1,5 +1,6 @@
 package com.annakulovuori.recipeApp.user;
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@Entity
+public class UserEntity {
 
     private int id;
     private String username;
