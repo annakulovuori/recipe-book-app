@@ -3,9 +3,11 @@ package com.annakulovuori.recipeApp.user;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 
 @Data
@@ -23,12 +25,14 @@ public class UserEntity implements UserDetails {
     private String email;
     private String password;
 
+    //Role enum type is String
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        // User can only have one role
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
