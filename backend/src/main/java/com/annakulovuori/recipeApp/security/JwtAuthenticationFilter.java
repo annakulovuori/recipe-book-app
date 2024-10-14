@@ -1,5 +1,6 @@
 package com.annakulovuori.recipeApp.security;
 
+import com.annakulovuori.recipeApp.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import java.io.IOException;
 @RequiredArgsConstructor //creates constructor for all final and nonNull properties
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final JwtService jwtService;
+
     @Override                        // request, response and filter chain cannot be null
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
@@ -27,9 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        // separating token from header starting after bearer
+        // extract token from header starting after bearer
         jwtToken = authHeader.substring(7);
-
+        userEmail = jwtService.extractUsername(jwtToken); // extact email from jwt token
 
     }
 }

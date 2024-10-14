@@ -1,4 +1,4 @@
-package com.annakulovuori.recipeApp.user;
+package com.annakulovuori.recipeApp.models;
 
 import jakarta.persistence.*;
 import lombok.*;
