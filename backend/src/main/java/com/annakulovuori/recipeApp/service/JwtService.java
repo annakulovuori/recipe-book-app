@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -17,6 +18,12 @@ public class JwtService {
 
     private static final String SECRET_KEY = "secret_key";
 
+    // generate token without extra claims, using generate token with extra claims
+    public String generateToken(UserDetails userdetails) {
+        return generateToken(new HashMap<>(), userdetails);
+    }
+
+    // generate token with extra claims
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userdetails
