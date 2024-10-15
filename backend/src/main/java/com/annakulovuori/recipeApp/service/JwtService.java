@@ -16,8 +16,8 @@ public class JwtService {
 
 
     //extractUsername actually extracts email now
-    public String extractUsername(String jwt) {
-        return extractClaim(jwt, Claims::getSubject);
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     // Extract any claim from claims
