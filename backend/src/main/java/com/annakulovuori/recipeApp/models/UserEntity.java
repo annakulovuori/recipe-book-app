@@ -21,7 +21,7 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String username;
+    private String nickname;
     private String email;
     private String password;
 
@@ -34,6 +34,11 @@ public class UserEntity implements UserDetails {
         // User can only have one role
         // Return list with only one role name
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
