@@ -38,6 +38,12 @@ public class JwtService {
                 .compact();
     }
 
+    // checks username match and expiration date. Also checks secret key through other methods
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
 
     //extractUsername actually extracts email now
     public String extractUsername(String token) {
