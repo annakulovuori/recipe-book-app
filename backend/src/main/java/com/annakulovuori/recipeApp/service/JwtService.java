@@ -50,6 +50,11 @@ public class JwtService {
     }
 
 
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+
     //extractUsername actually extracts email now
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
