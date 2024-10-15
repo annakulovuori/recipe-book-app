@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
@@ -19,6 +20,11 @@ public class JwtService {
         return null;
     }
 
+    // Extract any claim from claims
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
