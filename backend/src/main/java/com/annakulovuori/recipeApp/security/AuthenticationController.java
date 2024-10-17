@@ -1,4 +1,4 @@
-package com.annakulovuori.recipeApp.controllers;
+package com.annakulovuori.recipeApp.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
