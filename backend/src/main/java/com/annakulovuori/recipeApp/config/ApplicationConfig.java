@@ -4,6 +4,8 @@ import com.annakulovuori.recipeApp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -18,6 +20,18 @@ public class ApplicationConfig {
     public UserDetailsService userDetailsService() {
         return username -> repository.findByEmail(username)
                                      .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    // responsible for password encrypting, fetch userdetails etc.
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        // telling what userdetailsService to use
+        authProvider.setUserDetailsService(userDetailsService());
+        // what password encoder to use
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
     }
 
 }
