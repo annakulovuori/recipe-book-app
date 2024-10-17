@@ -43,6 +43,7 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // is responsible for managing authentication
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

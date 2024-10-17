@@ -1,4 +1,4 @@
-package com.annakulovuori.recipeApp.service;
+package com.annakulovuori.recipeApp.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
