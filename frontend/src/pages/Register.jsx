@@ -13,6 +13,8 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
 // import AppTheme from "../shared-theme/AppTheme";
 // import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 // import ColorModeSelect from "../shared-theme/ColorModeSelect";
@@ -189,7 +191,12 @@ export default function Register(props) {
           </Button>
           <Typography sx={{ textAlign: "center" }}>
             Already have an account?{" "}
-            <Link variant="body2" sx={{ alignSelf: "center" }}>
+            <Link
+              component={RouterLink}
+              to="/"
+              variant="body2"
+              sx={{ alignSelf: "center" }}
+            >
               Log in
             </Link>
           </Typography>
