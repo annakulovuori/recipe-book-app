@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   //default token state is empty
   const [token, setToken] = useState("");
   const [username, setUsername] = useState(null);
+  const navigate = useNavigate();
 
   //check if token exists and set values to state
   useEffect(() => {
@@ -56,6 +57,13 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       throw new Error("Error during registration");
     }
+  };
+
+  const logout = () => {
+    setUsername(null);
+    setToken("");
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   return (
