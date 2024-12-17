@@ -39,6 +39,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async (nickname, email, password) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/register",
+        { nickname, email, password }
+      );
+      if (response.data.token) {
+        setToken(response.data.token);
+        const decodedToken = jwtDecode(response.data.token);
+        setUsername(decodedToken.sub);
+        localStorage.setItem("token", response.data.token);
+        return response.data;
+      }
+      throw new Error("Registration failed, cannot find token");
+    } catch (error) {
+      throw new Error("Error during registration");
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{ username, token, authenticate, register, logout }}
