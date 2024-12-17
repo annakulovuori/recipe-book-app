@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // import ForgotPassword from "./ForgotPassword";
 // import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 // import AppTheme from "../shared-theme/AppTheme";
@@ -159,7 +160,7 @@ export default function LogIn(props) {
               error={passwordError}
               helperText={passwordErrorMessage}
               name="password"
-              placeholder="••••••"
+              placeholder="••••••••"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -181,6 +182,8 @@ export default function LogIn(props) {
           <Typography sx={{ textAlign: "center" }}>
             Don&apos;t have an account?{" "}
             <Link
+              component={RouterLink}
+              to="/register"
               variant="body2"
               sx={{ alignSelf: "center" }}
             >
