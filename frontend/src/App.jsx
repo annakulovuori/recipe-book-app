@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import { AuthProvider } from "./Hook/AuthProvider";
+import Search from "./pages/Search";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ function AppLayout() {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/search" element={<Search />} />
     </Routes>
   );
 }
