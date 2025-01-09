@@ -5,14 +5,19 @@ import Profile from "./pages/Profile";
 import { AuthProvider } from "./Hook/AuthProvider";
 import Search from "./pages/Search";
 import Settings from "./pages/Settings";
+import { ThemeProvider } from "@mui/material";
+import theme from "./Theme";
+
 
 export default function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <AppLayout />
-      </AuthProvider>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <AuthProvider>
+          <AppLayout />
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 
