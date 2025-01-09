@@ -1,23 +1,20 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Divider from "@mui/material/Divider";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
+// src/components/LogIn.js
+import React, { useRef, useReducer, useState } from "react";
+import {
+  Box,
+  Button,
+  CssBaseline,
+  FormControl,
+  FormLabel,
+  Link,
+  TextField,
+  Typography,
+  Card as MuiCard,
+  Stack,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-// import ForgotPassword from "./ForgotPassword";
-// import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
-// import AppTheme from "../shared-theme/AppTheme";
-// import ColorModeSelect from "../shared-theme/ColorModeSelect";
+import { useAuth } from "../Hook/AuthProvider";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -61,58 +58,65 @@ const LogInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function LogIn(props) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+const errorReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_ERROR":
+      return { ...state, [action.field]: action.payload };
+    case "CLEAR_ERRORS":
+      return {};
+    default:
+      return state;
+  }
+};
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+export default function LogIn() {
+  const [formErrors, dispatch] = useReducer(errorReducer, {});
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const { authenticate } = useAuth();
+  const navigate = useNavigate();
 
   const validateInputs = () => {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-
     let isValid = true;
 
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
+    if (!/\S+@\S+\.\S+/.test(emailRef.current.value)) {
       isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
+      dispatch({
+        type: "SET_ERROR",
+        field: "email",
+        payload: "Please enter a valid email address.",
+      });
     }
 
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage("Password must be at least 6 characters long.");
+    if (!passwordRef.current.value || passwordRef.current.value.length < 6) {
       isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage("");
+      dispatch({
+        type: "SET_ERROR",
+        field: "password",
+        payload: "Password must be at least 6 characters long.",
+      });
     }
 
     return isValid;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    dispatch({ type: "CLEAR_ERRORS" });
+
+    if (validateInputs()) {
+      const email = emailRef.current.value;
+      const password = passwordRef.current.value;
+
+      try {
+        const response = await authenticate(email, password);
+        if (response.token) {
+          navigate("/profile");
+        }
+      } catch (error) {
+        console.error("Authentication failed:", error);
+      }
+    }
   };
 
   return (
@@ -140,8 +144,9 @@ export default function LogIn(props) {
           <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
             <TextField
-              error={emailError}
-              helperText={emailErrorMessage}
+              inputRef={emailRef}
+              error={Boolean(formErrors.email)}
+              helperText={formErrors.email}
               id="email"
               type="email"
               name="email"
@@ -151,32 +156,25 @@ export default function LogIn(props) {
               required
               fullWidth
               variant="outlined"
-              color={emailError ? "error" : "primary"}
             />
           </FormControl>
           <FormControl>
             <FormLabel htmlFor="password">Password</FormLabel>
             <TextField
-              error={passwordError}
-              helperText={passwordErrorMessage}
+              inputRef={passwordRef}
+              error={Boolean(formErrors.password)}
+              helperText={formErrors.password}
               name="password"
               placeholder="••••••••"
               type="password"
               id="password"
               autoComplete="current-password"
-              autoFocus
               required
               fullWidth
               variant="outlined"
-              color={passwordError ? "error" : "primary"}
             />
           </FormControl>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={validateInputs}
-          >
+          <Button type="submit" fullWidth variant="contained">
             Log in
           </Button>
           <Typography sx={{ textAlign: "center" }}>
