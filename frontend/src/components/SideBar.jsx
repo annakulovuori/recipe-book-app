@@ -24,11 +24,6 @@ export default function SideBar() {
         position="fixed"
         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
       >
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Permanent drawer
-          </Typography>
-        </Toolbar>
       </AppBar>
       <Drawer
         sx={{
@@ -43,9 +38,7 @@ export default function SideBar() {
         anchor="left"
       >
         <Toolbar />
-        <Typography>
-            Recipebook
-        </Typography>
+        <Typography>Recipebook</Typography>
         <Divider />
         <List>
           <ListItem disablePadding>
@@ -74,14 +67,6 @@ export default function SideBar() {
           </ListItem>
         </List>
       </Drawer>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
-      >
-        <Toolbar />
-        <Typography sx={{ marginBottom: 2 }}>Lorem</Typography>
-        <Typography sx={{ marginBottom: 2 }}>Consequat</Typography>
-      </Box>
     </Box>
   );
 }
