@@ -43,7 +43,7 @@ export default function SideBar() {
         <List>
           {/* Profile Link */}
           <ListItem disablePadding>
-            <ListItemButton component={RouterLink} to="/">
+            <ListItemButton component={RouterLink} to="/profile">
               <ListItemIcon>
                 <AccountCircleIcon />
               </ListItemIcon>
