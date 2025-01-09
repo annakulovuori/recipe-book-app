@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import { AuthProvider } from "./Hook/AuthProvider";
 import Search from "./pages/Search";
+import Settings from "./pages/Settings";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ function AppLayout() {
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/search" element={<Search />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
   );
 }
