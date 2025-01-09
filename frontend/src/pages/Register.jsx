@@ -1,23 +1,22 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
+// src/components/Register.js
+import React, { useState, useRef, useReducer } from "react";
+import {
+  Box,
+  Button,
+  CssBaseline,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Link,
+  TextField,
+  Typography,
+  Card as MuiCard,
+  Stack,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../Hook/AuthProvider";
 
-// import AppTheme from "../shared-theme/AppTheme";
-// import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
-// import ColorModeSelect from "../shared-theme/ColorModeSelect";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -61,63 +60,77 @@ const RegisterContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function Register(props) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState("");
+const errorReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_ERROR":
+      return { ...state, [action.field]: action.payload };
+    case "CLEAR_ERRORS":
+      return {};
+    default:
+      return state;
+  }
+};
+
+export default function Register() {
+  const [formErrors, dispatch] = useReducer(errorReducer, {});
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
 
   const validateInputs = () => {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const name = document.getElementById("name");
-
     let isValid = true;
 
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
+    if (!nameRef.current.value) {
       isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
+      dispatch({
+        type: "SET_ERROR",
+        field: "name",
+        payload: "Name is required.",
+      });
     }
 
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage("Password must be at least 6 characters long.");
+    if (!/\S+@\S+\.\S+/.test(emailRef.current.value)) {
       isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage("");
+      dispatch({
+        type: "SET_ERROR",
+        field: "email",
+        payload: "Please enter a valid email address.",
+      });
     }
 
-    if (!name.value || name.value.length < 1) {
-      setNameError(true);
-      setNameErrorMessage("Name is required.");
+    if (passwordRef.current.value.length < 6) {
       isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage("");
+      dispatch({
+        type: "SET_ERROR",
+        field: "password",
+        payload: "Password must be at least 6 characters long.",
+      });
     }
 
     return isValid;
   };
 
-  const handleSubmit = (event) => {
-    if (nameError || emailError || passwordError) {
-      event.preventDefault();
-      return;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    dispatch({ type: "CLEAR_ERRORS" });
+
+    if (validateInputs()) {
+        const nickname = nameRef.current.value;
+        const email = emailRef.current.value;
+        const password = passwordRef.current.value;
+
+      try {
+        const response = await register(nickname, email, password);
+        if (response.token) {
+          navigate("/profile");
+        }
+      } catch (error) {
+        console.error("Registeration failed:", error);
+      }
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get("name"),
-      lastName: data.get("lastName"),
-      email: data.get("email"),
-      password: data.get("password"),
-    });
   };
 
   return (
@@ -139,35 +152,34 @@ export default function Register(props) {
           <FormControl>
             <FormLabel htmlFor="name">Nickname</FormLabel>
             <TextField
-              autoComplete="name"
+              inputRef={nameRef}
               name="name"
               required
               fullWidth
               id="name"
               placeholder="johnny54"
-              error={nameError}
-              helperText={nameErrorMessage}
-              color={nameError ? "error" : "primary"}
+              error={Boolean(formErrors.name)}
+              helperText={formErrors.name}
             />
           </FormControl>
           <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
             <TextField
+              inputRef={emailRef}
               required
               fullWidth
               id="email"
               placeholder="your@email.com"
               name="email"
               autoComplete="email"
-              variant="outlined"
-              error={emailError}
-              helperText={emailErrorMessage}
-              color={passwordError ? "error" : "primary"}
+              error={Boolean(formErrors.email)}
+              helperText={formErrors.email}
             />
           </FormControl>
           <FormControl>
             <FormLabel htmlFor="password">Password</FormLabel>
             <TextField
+              inputRef={passwordRef}
               required
               fullWidth
               name="password"
@@ -175,28 +187,16 @@ export default function Register(props) {
               type="password"
               id="password"
               autoComplete="new-password"
-              variant="outlined"
-              error={passwordError}
-              helperText={passwordErrorMessage}
-              color={passwordError ? "error" : "primary"}
+              error={Boolean(formErrors.password)}
+              helperText={formErrors.password}
             />
           </FormControl>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={validateInputs}
-          >
+          <Button type="submit" fullWidth variant="contained">
             Register
           </Button>
           <Typography sx={{ textAlign: "center" }}>
             Already have an account?{" "}
-            <Link
-              component={RouterLink}
-              to="/"
-              variant="body2"
-              sx={{ alignSelf: "center" }}
-            >
+            <Link component={RouterLink} to="/" variant="body2">
               Log in
             </Link>
           </Typography>
