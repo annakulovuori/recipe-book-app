@@ -1,3 +1,4 @@
+import { useAuth } from "../Hook/AuthProvider";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,12 +14,14 @@ import ListItemText from "@mui/material/ListItemText";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { Link as RouterLink } from "react-router-dom";
 import { red } from "@mui/material/colors";
 
 const drawerWidth = 240;
 
 export default function SideBar() {
+  const { logout } = useAuth();
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -94,6 +97,19 @@ export default function SideBar() {
                 <SettingsIcon />
               </ListItemIcon>
               <ListItemText primary="Settings" />
+            </ListItemButton>
+          </ListItem>
+
+          {/* Log out */}
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={logout}
+              sx={{ paddingLeft: 6, color: "#32161F" }}
+            >
+              <ListItemIcon sx={{ color: "#32161F" }}>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Log out" />
             </ListItemButton>
           </ListItem>
         </List>
