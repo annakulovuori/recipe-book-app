@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import { ThemeProvider } from "@mui/material";
 import theme from "./Theme";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 export default function App() {
   return (
@@ -24,8 +25,12 @@ export default function App() {
 function AppLayout() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route element={<PublicRoute />}>
+        <Route path="/" element={<Login />} />
+      </Route>
+      <Route element={<PublicRoute />}>
+        <Route path="/register" element={<Register />} />
+      </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<Profile />} />
       </Route>
