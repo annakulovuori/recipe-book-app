@@ -7,7 +7,7 @@ import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import { ThemeProvider } from "@mui/material";
 import theme from "./Theme";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
@@ -26,9 +26,15 @@ function AppLayout() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/search" element={<Search />} />
-      <Route path="/settings" element={<Settings />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/profile" element={<Profile />} />
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/search" element={<Search />} />
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/settings" element={<Settings />} />
+      </Route>
     </Routes>
   );
 }
